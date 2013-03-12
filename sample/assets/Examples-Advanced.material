@@ -1,0 +1,71 @@
+vertex_program FixVs glsles
+{
+   source FixVs.glsles
+   //use_optimiser false
+}
+
+fragment_program FixPs glsles
+{
+   source FixPs.glsles
+   //use_optimiser false
+}
+
+
+material Examples/BumpMapping/MultiLight
+{
+   technique
+   {
+      pass
+	{
+	ambient 0 1 1 1
+	diffuse 1 1 1 1
+	specular 1 1 0 1 
+	vertex_program_ref FixVs
+	{
+		param_named_auto worldViewProj worldviewproj_matrix   
+	 	param_named_auto ambient ambient_light_colour
+		param_named_auto lightPosition light_position 0
+		param_named_auto world world_matrix
+		param_named_auto lightAttenuation light_attenuation 0
+		param_named_auto lightDiffuse light_diffuse_colour 0
+		param_named_auto surfaceDiffuse surface_diffuse_colour
+                param_named_auto textureMatrix0 texture_matrix 0;
+                param_named_auto textureMatrix1 texture_matrix 1;
+                param_named lightOpen int 0
+	}
+
+	fragment_program_ref FixPs
+	{
+              	param_named s_texture0 int 0
+		param_named s_texture1 int 1
+		param_named s_texture2 int 2
+                param_named textureColorAdjust float4 1.0 1.0 1.0 1.0
+                param_named LastLayerColor float4 1.0 1.0 1.0 1.0
+	}
+
+	texture_unit
+	{
+		//texture brick_normal.jpg 2d
+		texture BeachStones.jpg 2d
+	}
+      }
+   }
+}
+
+material Examples/BumpMapping/MultiLight1234
+{
+   technique
+   {
+      pass
+	{
+	ambient 0 1 1 1
+	diffuse 1 1 1 1
+	specular 1 1 0 1 
+	texture_unit
+	{
+		//texture brick_normal.jpg 2d
+		texture BeachStones.jpg 2d
+	}
+      }
+   }
+}

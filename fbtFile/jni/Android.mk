@@ -1,0 +1,14 @@
+LOCAL_PATH := $(call my-dir)
+
+include $(CLEAR_VARS)
+
+LOCAL_MODULE		:= fbtFile
+LOCAL_C_INCLUDES	:= $(LOCAL_PATH)/
+LOCAL_C_INCLUDES	+= $(LOCAL_PATH)/include
+
+LOCAL_CFLAGS := -O3 -DANDROID_NDK -DOut_API
+
+LOCAL_SRC_FILES		:= 	fbtFile.cpp fbtTables.cpp fbtTypes.cpp fbtStreams.cpp fbtBuilder.cpp
+LOCAL_LDLIBS := -L$(LOCAL_PATH)/../lib 
+LOCAL_LDLIBS += -ldl -llog -lgcc
+include $(BUILD_STATIC_LIBRARY)

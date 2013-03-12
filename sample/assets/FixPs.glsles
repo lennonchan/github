@@ -1,0 +1,81 @@
+
+precision mediump int;
+precision mediump float;
+
+varying vec4 colour0;
+varying vec2 v_texCoord0;
+varying vec2 v_texCoord1;
+
+uniform sampler2D s_texture0;
+uniform sampler2D s_texture1;
+uniform sampler2D s_texture2;
+uniform vec4 AlphaValue;
+uniform vec4 LastLayerColor;
+uniform vec4 textureColorAdjust;
+
+#define MAX_TEXTURE_COUNT  8
+uniform vec4 textureCount;
+uniform sampler2D CurrentTextureID[MAX_TEXTURE_COUNT];
+uniform vec4 CurrentTextureColor[MAX_TEXTURE_COUNT];
+varying vec4 CurrentTextureCoord[MAX_TEXTURE_COUNT];
+
+vec4 GetTextureCount0();
+
+vec4 GetTextureCount1();
+
+
+vec4 GetTextureCount2()
+{
+     vec4 blendColor;
+     vec4 textureColor0 = texture2D( s_texture0, v_texCoord0 ) ;
+     vec4 textureColor1 = texture2D( s_texture1, v_texCoord1 ) ;
+     if(AlphaValue.w != 0.0)
+     {
+          blendColor = textureColor0;
+          //blendColor.w *= AlphaValue;
+     }
+     else
+     {
+          blendColor = textureColor0 * textureColorAdjust.w + textureColor1 * (1.0-textureColorAdjust.w);
+          blendColor.w = (textureColor1.w) * textureColor0.w;
+     }
+     return blendColor * LastLayerColor;
+}
+
+vec4 GetTextureCount3()
+{  
+    return colour0 * LastLayerColor;
+}
+
+void main() 
+{ 
+      if(textureCount.x == 0.0)      gl_FragColor = GetTextureCount0();
+      else if(textureCount.x == 1.0) gl_FragColor = GetTextureCount1();
+      else if(textureCount.x == 2.0) gl_FragColor = GetTextureCount2();
+      else if(textureCount.x == 3.0) gl_FragColor = GetTextureCount2();
+      else if(textureCount.x == 4.0) gl_FragColor = GetTextureCount2();
+      else if(textureCount.x == 5.0) gl_FragColor = GetTextureCount2();
+      else                       gl_FragColor = vec4(1.0,1.0,1.0,1.0);
+}
+
+// get no texture color
+vec4 GetTextureCount0()
+{
+     return colour0 * AlphaValue;
+
+}
+vec4 GetTextureCount1()
+{
+     vec4 blendColor;
+     vec4 textureColor0 = texture2D( s_texture0, v_texCoord0 );
+     if(AlphaValue.w != 0.0)
+     {
+          blendColor = textureColor0;
+          //blendColor.w *= AlphaValue;
+     }
+     else
+     {
+          blendColor = textureColor0 * textureColorAdjust ;//+ colour0 * (1.0- textureColorAdjust.w );
+     }
+      return blendColor * LastLayerColor;
+}

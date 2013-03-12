@@ -1,0 +1,26 @@
+使用方法 创建数据库对象 打开数据库
+
+
+        CDataService* dataService = new CDataService();
+	dataService->GetDataService("E:\\sdk\\appdatabase.db");
+	vector<AppDataInfo> data = dataService->GetDataAll(false); // GetDataAll 参数 ture 为返回 按英文名字排序 false 为按照 启动次数排序
+	u32 endTime = os::Timer::getRealTime() - beginTime;
+
+	printf("endTime %d dltha %d \n",os::Timer::getRealTime(),endTime); 
+
+	for (int i =0; i< data.size(); ++i)
+	{
+		AppDataInfo dataTemp = data[i];
+
+		printf("%s,%s ,%s, \n",dataTemp.activityname.c_str(),dataTemp.appenglishname.c_str(),dataTemp.AppName.c_str());
+
+	}
+	
+        // 增加一个新的数据库记录 传递一个新的appdatainfo 对象即可 
+	data[0].appStartCount = 12;
+	dataService->AddData(data[0]);
+
+	data[0].appStartCount = 13;
+	data[0].appenglishname ="test app name";
+         // 修改一个已存在的数据库记录 传递一个新的appdatainfo 对象，并提供一个标示数据的主键  例如：429为appID 主键号
+	dataService->UpdateData(429,data[0]);

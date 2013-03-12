@@ -1,0 +1,32 @@
+#ifndef __STATEANDDATA__
+#define __STATEANDDATA__
+
+#include "gkLogger.h"
+
+enum StateSet{
+	NONE,
+	TV,
+	NORMAL,
+	MENU,
+	EDIT,
+	ALLAPP,
+	SORT_IN_ALLAPP,
+	SET_BACKGROUND,
+	EDIT_HOME_APP
+};
+
+
+enum EditStateSet{
+	ESS_NONE,
+	ESS_FOCUS_MOVE,
+	ESS_BLOCK_MOVE,
+	ESS_EDIT_BLOCK,
+	ESS_DELETE_APP,
+	ESS_DELETE_BLOCK,
+	ESS_ADD_BLOCK,
+	ESS_RENAME		
+};
+
+
+
+#endif

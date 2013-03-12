@@ -1,0 +1,77 @@
+
+precision mediump int;
+precision mediump float;
+
+// input built_in var
+attribute vec4 vertex;  // built_in Vertex Position
+attribute vec4 normal;  // built_in Vertex Normal
+attribute vec2 uv0;     // built_in Vertex Texture Coord( Windows default but android not)
+attribute vec4 colour;  // built_in Vertex Colour Or Diffuse Color
+
+// output var
+varying vec4 colour0;
+varying vec2 v_texCoord0;
+varying vec2 v_texCoord1;
+
+// input user var
+uniform vec4 ambient;
+uniform mat4 worldViewProj;
+uniform vec4 lightPosition;
+uniform mat4 world;
+uniform vec4 lightAttenuation;
+uniform vec4 lightDiffuse;
+uniform vec4 surfaceDiffuse;
+uniform vec4 textureMatrix0;
+uniform vec4 textureMatrix1;
+uniform vec4 lightSpecular;
+uniform vec4 surfaceSpecular;
+uniform int lightOpen;
+vec4 ComputerPosition(in vec4 vertex)
+{
+#if 0
+    v_texCoord0 = (textureMatrix0 * vec4(uv0.x,uv0.y,0.0,1.0)).xy;
+    v_texCoord1 = (textureMatrix1 * vec4(uv0.x,uv0.y,0.0,1.0)).xy;
+#endif
+    v_texCoord0 = uv0 * vec2(textureMatrix0.xy) + vec2(textureMatrix0.zw);
+    v_texCoord1 = uv0 * vec2(textureMatrix1.xy) + vec2(textureMatrix1.zw);
+    return worldViewProj * vertex;
+}
+
+vec4 ComputerLightColor(in vec4 lightPosition ,in mat4 world,  vec4 vertex, vec4 normal,vec4 lightAttenuation,
+     vec4 lightDiffuse ,in vec4 surfaceDiffuse ,vec4 lightSpecular,vec4 surfaceSpecular)
+    {
+         vec4 colour = vec4(1.0,1.0,1.0,1.0);
+         vec3 LightV = vec3(lightPosition) - vec3(world * vertex);
+	 float att = 1.0 / (lightAttenuation.y);
+	 vec3 LightVN = normalize(LightV);
+
+	 vec3 NormalV = mat3(world)*vec3(normal);
+   	 vec3 NormalVN = normalize(NormalV);
+
+	 float NdotL = max(dot(NormalVN ,LightVN), 0.4);
+	 colour = NdotL * lightDiffuse * surfaceDiffuse;
+
+	 vec3 hvec = normalize(LightVN + vec3(0.0, 0.0, 0.0));
+	 float NdotH = dot(NormalV, hvec);
+	 if(NdotH > 0.0)
+	 {
+	      colour += pow(NdotH, 0.5) * lightSpecular * surfaceSpecular;
+	 }
+	 colour *= att;
+         colour.w = 1.0;
+         return colour;
+    }
+
+void main()
+{
+	gl_Position = ComputerPosition(vertex);
+        if(lightOpen == 1)
+       {
+           colour0 = ComputerLightColor(lightPosition,world,vertex,normal,
+                    lightAttenuation,lightDiffuse,surfaceDiffuse,lightSpecular,surfaceSpecular);
+       }
+       else
+       {  
+           colour0 = surfaceDiffuse;
+       } 
+}
